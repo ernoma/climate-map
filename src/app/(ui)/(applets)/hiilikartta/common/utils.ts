@@ -223,6 +223,91 @@ export const transformCalcGeojsonToNestedStructure = (
   return output
 }
 
+export const transformNestedStructureToCalcGeojson = (
+  input: CalcFeatureCollection
+): GeoJSON.FeatureCollection => {
+  const output: GeoJSON.FeatureCollection = {
+    type: 'FeatureCollection',
+    features: [],
+  }
+
+  // let index = 0;
+
+  input.features.forEach((feature: CalcFeature) => {
+    let newProperties: any = {} as any
+
+    // let carbonValues: any[] = []
+
+    featureCols.forEach((col) => {
+      for (let [key, value] of Object.entries(feature.properties[col].nochange)) {
+      // const nochange = Object.keys(feature.properties[col].nochange).reduce(
+      //   (obj: any, key) => {
+          // if (key in feature.properties[col].nochange) {
+            newProperties[col + "_nochange_" + key] = value // key ~ bio_carbon_total_nochange_2024
+            // obj[col + "_nochange_" + key] = feature.properties[col].nochange[key]
+            // obj[`${col}_nochange_${key}`] = feature.properties[col].nochange[key]
+          // }
+        //   return obj
+        // },
+        // {}
+      }
+    
+      for (let [key, value] of Object.entries(feature.properties[col].planned)) {
+        // const planned = Object.keys(feature.properties[col].planned).reduce(
+        //   (obj: any, key) => {
+            // if (key in feature.properties[col].planned) {
+              newProperties[col + "_planned_" + key] = value
+              // obj[col + "_planned_" + key] = feature.properties[col].planned[key]
+              // obj[`${col}_planned_${key}`] = feature.properties[col].planned[key]
+            // }
+          //   return obj
+          // },
+          // {}
+      }
+    })
+
+      // for (let [key, value] of Object.entries(nochange)) {
+      //   carbonValues.push({key: value})
+      // }
+
+      // for (let [key, value] of Object.entries(planned)) {
+      //   carbonValues.push({key: value})
+      // }
+
+      // for (let key in nochange) {
+      //   carbonValues.push({key: nochange[key]})
+      // }
+      // for (let key in planned) {
+      //   carbonValues.push({key: planned[key]})
+      // }
+
+      // newProperties = Object.assign({}, newProperties, nochange, planned)
+    // })
+
+    // carbonValues.forEach((carbonValue) => {
+    //   newProperties[carbonValue.key] = carbonValue[carbonValue.key]
+    // })
+
+    newProperties.area = feature.properties.area
+    newProperties.zoning_code = feature.properties.zoning_code
+
+
+    const newFeature: GeoJSON.Feature = {
+      id: feature.id,
+      type: 'Feature',
+      properties: newProperties,
+      geometry: feature.geometry,
+    }
+
+    output.features.push(newFeature)
+
+    // index++;
+  })
+
+  return output;
+}
+
+
 export const getAggregatedCalcs = (
   calcFeature: CalcFeature,
   featureYears: string[]
@@ -414,6 +499,8 @@ export const getCarbonChangeColor = (carbon: Number | null | undefined) => {
 export const processCalcQueryToReportData = (data: any): ReportData => {
   const areas = transformCalcGeojsonToNestedStructure(data.areas)
   const totals = transformCalcGeojsonToNestedStructure(data.totals)
+  // const areas = data.areas
+  // const totals = data.totals
 
   const featureYears = Object.keys(
     totals.features[0].properties[featureCols[0]].nochange
@@ -436,6 +523,16 @@ export const processCalcQueryToReportData = (data: any): ReportData => {
   }
 
   return reportData
+}
+
+export const processReportDataToCalcQuery = (data: any): any => {
+  
+    const areas = transformNestedStructureToCalcGeojson(data.areas)
+    const totals = transformNestedStructureToCalcGeojson(data.totals)
+    // const areas = data.areas
+    // const totals = data.totals
+
+    return { areas: areas, totals: totals }
 }
 
 export const checkIsValidZoningCode = (zoningCode: string | null) => {

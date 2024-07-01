@@ -12,7 +12,7 @@ import { T, useTranslate } from '@tolgee/react'
 import { getRoute } from '#/common/utils/routing'
 import MultiSelectAutocomplete from '#/components/common/MultiSelectAutocomplete'
 import { FetchStatus, SelectOption } from '#/common/types/general'
-import { Link as LinkIcon } from '#/components/icons'
+import { Link as LinkIcon,  Download as DownloadIcon } from '#/components/icons'
 
 import { useAppletStore } from 'applets/hiilikartta/state/appletStore'
 import { routeTree } from 'applets/hiilikartta/common/routes'
@@ -24,6 +24,7 @@ import CarbonMapGraph from 'applets/hiilikartta/components/CarbonMapGraph'
 import CarbonLineChart from 'applets/hiilikartta/components/CarbonLineChart'
 import CarbonOverviewGraph from 'applets/hiilikartta/components/CarbonOverviewGraph'
 import ClipboardCopyWrapper from '#/components/common/ClipboardCopyWrapper'
+import DownloadResultsWrapper from '#/components/common/DownloadResultsWrapper'
 import { LoadingSpinner } from '#/components/Loading'
 import { useUIStore } from '#/common/store'
 
@@ -464,6 +465,42 @@ const Page = ({ params }: { params: { planIdSlug: string } }) => {
               <LinkIcon sx={{ ml: 1.5, mt: 0.2 }} />
             </Box>
           </ClipboardCopyWrapper>
+          <Box
+              sx={{
+                ml: 3,
+                mr: 3,
+                display: 'flex',
+                flexDirection: 'row',
+                '&:hover': {
+                  cursor: 'pointer',
+                },
+              }}
+            >
+              |
+          </Box>
+          {/* <DownloadResultsWrapper paramPlanConfs={{"externalPlanConfs": externalPlanConfs, "planIds": searchParams.get('planIds')}}> */}
+            <DownloadResultsWrapper planConfs={planConfs}>
+            <Box
+              sx={{
+                display: 'flex',
+                flexDirection: 'row',
+                '&:hover': {
+                  cursor: 'pointer',
+                },
+              }}
+            >
+              <Typography
+                sx={(theme) => ({
+                  typography: theme.typography.body7,
+                  display: 'inline',
+                  fontWeight: '700',
+                })}
+              >
+                <T keyName="report.download_results" ns={'hiilikartta'}></T>
+              </Typography>
+              <DownloadIcon sx={{ ml: 1.5, mt: 0.2 }} />
+            </Box>
+          </DownloadResultsWrapper>
         </Row>
       </Section>
       {!isLoaded && (
