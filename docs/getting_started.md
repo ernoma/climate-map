@@ -41,17 +41,18 @@ The plan calculation resuls for one plan are shown at the URL: https://hiilikart
 In the useEffect hook there is `PlanConfWithReportData` handling. The PlanConfWithReportData (that is defined in the `src/app/(ui)/(applets)/(hiilikartta)/common/types.ts`), for example, will contain the calculation report data that is shown to the user(s) .
 Since the user just opened the raportti page, the `addExternalPlanConf` function is called from the useEffect hook.
 
-The `addExternalPlanConf` is defined in the `src/app/(ui)/(applets)/(hiilikartta)/state/appletStore.ts` and there is also `useAppletStore.subscribe()` function call at the end of the appletStore.ts that checks if the report data has been fetched from the server already and if not, then it will use the fetchQuery function of the QueryClient (defined in the `src/common/queries/queryClient.ts`) fetch and cache the calculation report data via using the externalPlanQuery function defined in the `src/app/(ui)/(applets)/(hiilikartta)/common/queries/externalPlanQuery.tsx` (and imported from the `appletStore.ts`). The externalPlanQuery function makes get HTTP request to the hiilikartta-data-service to get the calculation report data.
+The `addExternalPlanConf` is defined in the `src/app/(ui)/(applets)/(hiilikartta)/state/appletStore.ts` and there is also `useAppletStore.subscribe()` function call at the end of the appletStore.ts that checks if the report data has been fetched from the server already and if not, then it will use the fetchQuery function of the QueryClient (defined in the `src/common/queries/queryClient.ts`) to fetch and cache the calculation report data via using the externalPlanQuery function defined in the `src/app/(ui)/(applets)/(hiilikartta)/common/queries/externalPlanQuery.tsx` (and imported from the `appletStore.ts`). The externalPlanQuery function makes get HTTP request to the hiilikartta-data-service to get the calculation report data and when the data is received, calls `processCalcQueryToReportData` function defined in the `src/app/(ui)/(applets)/(hiilikartta)/common/utils.ts`.
 
 It might also be useful to note that:
 - `src/app/(ui)/(applets)/(hiilikartta)/common/queries/planQueries.tsx` is imported from `src/app/(ui)/(applets)/(hiilikartta)/(pages)/layout.tsx`
 - `src/app/(ui)/(applets)/(hiilikartta)/common/queries/planQuery.tsx` is not imported from anywhere but there is commented out code that uses planQuery, in the `planQueries.tsx`
 
-The PlanConfWithReportData has ReportData attribute that is also defined in the that is also defined in the `src/app/(ui)/(applets)/(hiilikartta)/common/types.ts`. The ReportData contains the attributes:
-- areas: CalcFeatureCollection
-- totals: CalcFeatureCollection
-- metadata:
-    - timestamp: number
-    - featureYears: string[]
-- agg: { totals: FeatureCalcs }
-
+The PlanConfWithReportData has ReportData attribute that is also defined in the `src/app/(ui)/(applets)/(hiilikartta)/common/types.ts`. The ReportData contains the attributes:
+```
+    areas: CalcFeatureCollection
+    totals: CalcFeatureCollection
+    metadata:
+        timestamp: number
+        featureYears: string[]
+    agg: { totals: FeatureCalcs }
+```
