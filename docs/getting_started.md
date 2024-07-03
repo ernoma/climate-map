@@ -32,7 +32,7 @@ When you have the climate-map app running, the UI can be found from [http://loca
 
 ## Technical Notes
 
-### How Existing Plan Calculation Results are Retrieved from the Server
+### How Existing Plan Calculation Results are Retrieved from the Server by the Hiilikartta Map-Client
 
 The plan calculation resuls for one plan are shown at the URL: https://hiilikartta.avoin.org/raportti?planIds=<uuid> where uuid is the unique id for the plan used in Hiilikartta calculation, for example https://hiilikartta.avoin.org/raportti?planIds=1ab88dd6-673d-4d7e-a07f-58f13d6fc163 shows results of the imaginary plan. If we search code fpr the `planIds` term we notice that it is set as a query parameter in the `src/app/(ui)/(applets)/(hiilikartta)/(pages)/kaavat/[planIdSlug]/page.tsx` in the handleOpenReport function that also routes the web browser to open the `src/app/(ui)/(applets)/(hiilikartta)/(pages)/raportti/page.tsx`. We also notice that the plandIds query parameter is referred in the `src/app/(ui)/(applets)/(hiilikartta)/(pages)/raportti/page.tsx` twice, it is:
 1. set in the `handlePlanSelectClick` function and
@@ -56,3 +56,9 @@ The PlanConfWithReportData has ReportData attribute that is also defined in the 
         featureYears: string[]
     agg: { totals: FeatureCalcs }
 ```
+
+
+### How Existing Plan Calculation Results Can be Retrieved from the Carbon Map
+
+There is the `src\app\(ui)\(applets)\(hiilikartta)\api\report\route.ts`. This means that if the client application, such as USCIAT, knows id of the plan that has calculation results, it can retrieve the results by making request to the `https://hiilikartta.avoin.org/api/report?id=<plan_id>` URL where the `<plan_id>` is the id of the plan. The data is returned as JSON (containing also GeoJSON).
+
