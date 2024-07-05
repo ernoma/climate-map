@@ -22,7 +22,7 @@ const SvgDownload = (props: Props) => (
     xmlns="http://www.w3.org/2000/svg"
     width={8.5}
     height={12}
-    viewBox="0 0 8.5 12"
+    viewBox="0 0 17 24"
     fill="none"
     {...props}
   >
